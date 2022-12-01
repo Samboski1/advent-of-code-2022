@@ -3,26 +3,30 @@ import { readFileSync } from 'fs'
 
 const values: number[] = readFileSync(join(__dirname, 'input.txt'), 'utf-8').split('\n').map(value => parseInt(value))
 
-const partOne = (values: number[]) => {
-    let maximum = 0, sum = 0;
+const sumChunks = (values: number[]) => {
+    let chunks: number[] = []
 
-    for (const value of values) {
-        if (Number.isNaN(value)) {
-            if (sum > maximum) {
-                maximum = sum
-            }
-            sum = 0
-            continue
+    values.reduce((accumulator, currentValue) => {
+        if (Number.isNaN(currentValue)) {
+            chunks.push(accumulator)
+            return 0;
         }
+        return accumulator + currentValue
+    })
 
-        sum += value
-    }
+    return chunks
+}
 
-    return maximum
+const partOne = (values: number[]) => {
+    return Math.max(...sumChunks(values))
 }
 
 const partTwo = (values: number[]) => {
-
+    return sumChunks(values).sort((a, b) => {
+        return b - a
+    }).slice(0, 3).reduce((acc, current) => {
+        return acc + current
+    })
 }
 
 console.log(partOne(values))
