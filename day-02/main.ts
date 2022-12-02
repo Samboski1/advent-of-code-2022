@@ -7,13 +7,10 @@ enum Choice {
     Scissors = 'Scissors',
 }
 
-const translation = {
-    A: Choice.Rock,
-    B: Choice.Paper,
-    C: Choice.Scissors,
-    X: Choice.Rock,
-    Y: Choice.Paper,
-    Z: Choice.Scissors,
+enum Result {
+    Win = 'Win',
+    Lose = 'Lose',
+    Draw = 'Draw',
 }
 
 const assignPoints = (competitor, me) => {
@@ -50,15 +47,25 @@ const assignPoints = (competitor, me) => {
     return points
 }
 
-const values: number[][] = readFileSync(join(__dirname, 'input.txt'), 'utf-8')
+const values: string[] = readFileSync(join(__dirname, 'input.txt'), 'utf-8')
     .split('\n')
-    .map(input => {
+
+const partOne = (values: string[]) => {
+    const translation = {
+        A: Choice.Rock,
+        B: Choice.Paper,
+        C: Choice.Scissors,
+        X: Choice.Rock,
+        Y: Choice.Paper,
+        Z: Choice.Scissors,
+    }
+
+    const hands = values.map(input => {
         let hands = input.split(' ')
         return [translation[hands[0]],translation[hands[1]]]
     })
 
-const partOne = (values: number[][]) => {
-    const points = values.map(hand => {
+    const points = hands.map(hand => {
         return assignPoints(hand[0], hand[1])
     })
 
@@ -67,4 +74,54 @@ const partOne = (values: number[][]) => {
     }, 0)
 }
 
+const partTwo = (values: string[]) => {
+    const translation = {
+        A: Choice.Rock,
+        B: Choice.Paper,
+        C: Choice.Scissors,
+        X: Result.Lose,
+        Y: Result.Draw,
+        Z: Result.Win,
+    }
+
+    const findMyHand = (opponent, result) => {
+        switch (result) {
+            case Result.Draw:
+                return opponent
+            case Result.Win:
+                switch (opponent) {
+                    case Choice.Rock:
+                        return Choice.Paper
+                    case Choice.Paper:
+                        return Choice.Scissors
+                    case Choice.Scissors:
+                        return Choice.Rock
+                }
+            case Result.Lose:
+                switch (opponent) {
+                    case Choice.Rock:
+                        return Choice.Scissors
+                    case Choice.Paper:
+                        return Choice.Rock
+                    case Choice.Scissors:
+                        return Choice.Paper
+                }
+        }
+    }
+
+    const hands = values.map(input => {
+        let hands = input.split(' ')
+        return [translation[hands[0]],translation[hands[1]]]
+    })
+
+    let points = 0
+
+    for (const hand of hands) {
+        points += assignPoints(hand[0], findMyHand(hand[0], hand[1]))
+    }
+
+    return points
+}
+
 console.log(partOne(values))
+console.log(partTwo(values))
