@@ -1,10 +1,4 @@
-import { join } from 'node:path'
-import { readFileSync } from 'fs'
-
-const values: string[] = readFileSync(join(__dirname, 'input.txt'), 'utf-8')
-    .split('\n')
-
-const partOne = (values: string[]) => {
+export const partOne = (values: string[]) => {
     const assignments = values.map(assignment => {
         return assignment.split(',').map(elves => elves.split('-').map(num => parseInt(num)))
     })
@@ -26,5 +20,3 @@ const partOne = (values: string[]) => {
 
     return count
 }
-
-console.log(partOne(values))
