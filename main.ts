@@ -37,5 +37,6 @@ if (data[data.length - 1] === '') {
 const dayCode = await import(`./day-${('00'+dayNumber).slice(-2)}/main.js`)
 
 console.log(dayCode.partOne(data))
+console.log(dayCode.partTwo(data))
 
 export {}
