@@ -1,6 +1,7 @@
-export const partOne = (values: string[]) => {
+const parseData = (values: string[]) => {
     const stackPositions = [1, 5, 9, 13, 17, 21, 25, 29, 33]
     const stackHeight = 8
+
     let stacks: string[][] = []
 
     for (const stackPosition of stackPositions) {
@@ -23,10 +24,21 @@ export const partOne = (values: string[]) => {
             }
         });
 
+    return {
+        stacks,
+        instructions
+    }
+}
+
+export const partOne = (values: string[]) => {
+    const parsedData = parseData(values)
+    const stacks = parsedData.stacks
+    const instructions = parsedData.instructions
+
     for (const instruction of instructions) {
         for (let i = 0; i < instruction.numberOfBlocks; i++) {
-            let movingBlock = stacks[instruction.fromStack-1].pop()
-            stacks[instruction.toStack-1].push(movingBlock || 'NO_BLOCK_FOUND')
+            let movingBlock: string = stacks[instruction.fromStack-1].pop()!
+            stacks[instruction.toStack-1].push(movingBlock)
         }
     }
 
@@ -34,5 +46,18 @@ export const partOne = (values: string[]) => {
 }
 
 export const partTwo = (values: string[]) => {
-    return null
+    const parsedData = parseData(values)
+    const stacks = parsedData.stacks
+    const instructions = parsedData.instructions
+
+    for (const instruction of instructions) {
+        let movingBlocks: string[] = []
+        for (let i = 0; i < instruction.numberOfBlocks; i++) {
+            let movingBlock: string = stacks[instruction.fromStack-1].pop()!
+            movingBlocks.push(movingBlock)
+        }
+        stacks[instruction.toStack-1] = stacks[instruction.toStack-1].concat(movingBlocks.reverse())
+    }
+
+    return stacks.map(stack => stack[stack.length-1]).join('')
 }
