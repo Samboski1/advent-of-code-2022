@@ -3,6 +3,12 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 
 const dayNumber = process.argv[2]
 
+const sessionToken = process.env.AOC_SESSION_TOKEN
+
+if (!sessionToken) {
+    throw new Error('Token must be set')
+}
+
 console.log(`Running day ${dayNumber}`)
 
 const getData = async (day) => {
@@ -13,7 +19,7 @@ const getData = async (day) => {
         console.log('Fetching from Advent Of Code')
         const response = await fetch(`https://adventofcode.com/2022/day/${day}/input`, {
             headers: {
-                Cookie: `session=${process.env.AOC_SESSION_TOKEN}`,
+                Cookie: `session=${sessionToken}`,
                 'User-Agent': 'https://github.com/alexmuller/advent-of-code-2022'
             }
         })
