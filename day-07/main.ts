@@ -1,4 +1,4 @@
-export const partOne = (values: string[]) => {
+const generateDirectorySizesFromInput = (values: string[]) => {
     const currentWorkingDirectory: string[] = []
     const directorySizes = {}
 
@@ -34,13 +34,31 @@ export const partOne = (values: string[]) => {
         }
     }
 
+    return directorySizes
+}
+
+export const partOne = (values: string[]) => {
+    const directorySizes = generateDirectorySizesFromInput(values)
+
     const directoriesUnder100000 = Object.keys(directorySizes)
         .filter(dir => directorySizes[dir] <= 100000)
         .map(dir => directorySizes[dir])
         .reduce((sum, elem) => sum + elem, 0)
 
-    return JSON.stringify(directoriesUnder100000, null, 4)
+    return directoriesUnder100000
 }
 
 export const partTwo = (values: string[]) => {
+    const totalDiskSpace = 70000000
+    const updateRequires = 30000000
+    const directorySizes: object = generateDirectorySizesFromInput(values)
+    const freeSpaceOnRoot = totalDiskSpace - directorySizes['/']
+    const needToFree = updateRequires - freeSpaceOnRoot
+
+    const directoryToRemove: number[] = Object.values(directorySizes)
+        .filter(size => size >= needToFree)
+        .sort((a, b) => a - b)
+        .slice(0, 1)
+
+    return directoryToRemove[0]
 }
